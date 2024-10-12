@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpantaNum Calculator</title>
+    <script src="https://cdn.rawgit.com/ExpantaNum/ExpantaNum/master/ExpantaNum.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ExpantaNum Calculator</h1>
+    <input type="text" id="input" placeholder="Enter your calculation (e.g., En, En#m)" />
+    <button onclick="calculate()">Calculate</button>
+    <div id="result"></div>
+
+    <script>
+        function parseNotation(input) {
+            // Replace custom notation with ExpantaNum compatible format
+            input = input.replace(/E(\d+)/g, function(match, n) {
+                return ExpantaNum(10).pow(n); // En -> 10^n
+            });
+            input = input.replace(/E(\d+)#(\d+)/g, function(match, n, m) {
+                let base = ExpantaNum(10).pow(n); // En
+                let repeated = base.pow(m); // 10^^n
+                return repeated;
+            });
+            return input;
+        }
+
+        function calculate() {
+            const input = document.getElementById('input').value;
+            const parsedInput = parseNotation(input);
+            try {
+                const result = eval(parsedInput); // Using eval to evaluate the expression
+                document.getElementById('result').innerText = "Result: " + ExpantaNum(result).toString();
+            } catch (error) {
+                document.getElementById('result').innerText = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
